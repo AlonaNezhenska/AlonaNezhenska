@@ -153,20 +153,12 @@ css = (f".cat-m{{animation:run {T}s linear infinite}}@keyframes run{{{kf}}}{cat_
        ".st{animation:tw 4s ease-in-out infinite}@keyframes tw{50%{opacity:.25}}"
        ".fl{animation:fl 3s steps(1) infinite}@keyframes fl{0%,85%{opacity:1}86%,92%{opacity:.25}93%{opacity:1}}"
        ".bl{animation:bl 1.6s steps(1) infinite}@keyframes bl{50%{opacity:.2}}"
-       f"@media (prefers-reduced-motion:reduce){{*{{animation:none!important}}.cat-m{{transform:translate({bx-cw/2:.1f}px,{tops[best_i]-G:.1f}px)}}}}")
-# the mouse it's chasing: three roofs ahead, scurrying (never needs to leap, it's light)
-AHEAD = 3
+       f"@media (prefers-reduced-motion:reduce){{*{{animation:none!important}}.mouse-m{{transform:translate({bx-cw/2:.1f}px,{tops[best_i]-G:.1f}px)}}}}")
+# no cat in the city: just the mouse, scurrying across the rooftops on the same route (hops over the gaps)
 mev = cs.timeline([("mouse_run", T)])
 mouse_svg, mouse_css = cs.instance("mouse", mev, T, scale=SC)
-mk = []
-for i in range(last + 1):
-    j = i + AHEAD
-    mxp = cx(min(j, last)) + max(0, j - last) * step * 1.4          # past the last roof it runs off the edge
-    myp = tops[min(j, last)]
-    mk.append(f"{(t0 + i*seg)/T*100:.3f}%{{transform:translate({mxp-cw/2:.1f}px,{myp-G:.1f}px)}}")
-mk.append(f"100%{{transform:translate({cx(last)+AHEAD*step*1.4-cw/2:.1f}px,{tops[-1]-G:.1f}px)}}")
-css += f".mouse-m{{animation:mrun {T}s linear infinite}}@keyframes mrun{{{''.join(mk)}}}{mouse_css}"
-cat = f'<g class="fade">{mouse_svg}</g><g class="fade" filter="url(#gl)">{cat_svg}</g>'
+css += f".mouse-m{{animation:run {T}s linear infinite}}{mouse_css}"
+cat = f'<g class="fade">{mouse_svg}</g>'
 
 first, lastday = days[0][0], days[-1][0]
 svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Night city made from {USER}'s GitHub contributions: {total} in the last year, best week {peak}, longest streak {best_streak} days">
