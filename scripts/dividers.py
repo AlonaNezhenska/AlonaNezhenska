@@ -48,16 +48,15 @@ T = svg("cat-sit.svg", [("sit", sit_t)], [(0, CX, 1), (sit_t, CX, 1)], label="pi
 # the ending scene from the portfolio: walk in, lie down, sleep (zzz)... a mouse tiptoes past,
 # the cat opens one eye, the mouse freezes, the eye closes, the mouse bolts
 ld = len(cat.frames_of("lie_down")) / cat.meta["anims"]["lie_down"]["fps"]
-S0 = walk_in + sd + 1.2 + ld                      # moment the cat is asleep
+S0 = 0                                            # the cat is asleep from the start, it never walks here
 TIP, FRZ, RUN, AFTER = 2.8, 1.3, .9, 4.5
-w0 = S0 + 1.2                                     # mouse starts tiptoeing
-parts = [("walk", walk_in), ("sit_down", None), ("sit", 1.2), ("lie_down", None),
-         ("sleep", w0 + TIP - S0), ("wink", FRZ), ("sleep", RUN + .2 + AFTER)]
+w0 = 1.5                                          # mouse starts tiptoeing
+parts = [("sleep", w0 + TIP), ("wink", FRZ), ("sleep", RUN + .2 + AFTER)]
 ev = cat.timeline(parts)
 Ttot = round(ev[-1][2] + ev[-1][3], 3)
 cat_g, css = cat.instance("c", ev, Ttot, scale=S)
 kf = "".join(f"{t/Ttot*100:.2f}%{{transform:translate({x:.1f}px,0);opacity:{o}}}"
-             for t, x, o in [(0, W + 10, 0), (.3, W - 20, 1), (walk_in, CX, 1), (Ttot - .5, CX, 1), (Ttot, CX, 0)])
+             for t, x, o in [(0, CX, 1), (Ttot, CX, 1)])
 css += f".c-m{{animation:m {Ttot}s linear infinite}}@keyframes m{{{kf}}}"
 # mouse
 mev = cat.timeline([("mouse_tiptoe", w0 + TIP), ("mouse_freeze", FRZ), ("mouse_idle", .2), ("mouse_run", Ttot - (w0 + TIP + FRZ + .2))])
@@ -72,9 +71,12 @@ css += mcss + ".mo-m{animation:mo " + str(Ttot) + "s linear infinite}@keyframes 
 zx, zy = CX + cw * .3, G - chh * .55
 zs = "".join(f'<text class="z z{i}" x="{zx+i*9:.0f}" y="{zy-i*4:.0f}" font-family="Consolas,Menlo,monospace" font-weight="700" '
              f'font-size="{13+i*3}" fill="{c}">z</text>' for i, c in enumerate(["#3fd8ff", "#a98bff", "#ff4fa3"]))
-s0p, wkp = S0 / Ttot * 100, (w0 + TIP) / Ttot * 100
-css += "".join(f".z{i}{{opacity:0;animation:z{i} {Ttot}s infinite}}@keyframes z{i}{{0%,{s0p+i*3:.1f}%{{opacity:0;transform:none}}"
-               f"{s0p+i*3+2:.1f}%{{opacity:1}}{min(wkp-1, s0p+i*3+12):.1f}%{{opacity:0;transform:translate(18px,-28px)}}100%{{opacity:0}}}}" for i in range(3))
+wk0, wk1 = (w0 + TIP) / Ttot * 100, (w0 + TIP + FRZ) / Ttot * 100
+css += "".join(f".z{i}{{opacity:0;animation:zz 3s ease-out {i}s infinite}}" for i in range(3))
+css += "@keyframes zz{0%{opacity:0;transform:none}20%{opacity:1}100%{opacity:0;transform:translate(18px,-28px)}}"
+# hide the zzz while the cat peeks with one eye
+css += f".zs{{animation:zh {Ttot}s steps(1) infinite}}@keyframes zh{{0%{{opacity:1}}{wk0:.2f}%{{opacity:0}}{wk1+1:.2f}%{{opacity:1}}}}"
+zs = f'<g class="zs">{zs}</g>'
 body = (f'<rect x="0" y="{G:.1f}" width="{W}" height="2" rx="1" fill="url(#ln)" opacity=".8"/>'
         f'<g filter="url(#gl)">{cat_g}</g>{mouse_g}{zs}')
 out = (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" '
