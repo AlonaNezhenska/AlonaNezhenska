@@ -37,7 +37,7 @@ Pick your role and see the projects that fit it best.
 
 - 🏎️ [**RaceSimulator**](https://github.com/AlonaNezhenska/RaceSimulator): every car runs on its own thread, races controlled through a REST API (Java, Spring Boot)
 - 🧪 [**CoronaDesinfector**](https://github.com/AlonaNezhenska/CoronaDesinfector): my own mini Spring IoC container built with reflection and dynamic proxies
-- 🌳 [**Wellnity**](https://wellnity.ddns.net/): Node.js API with 41 endpoints, PostgreSQL, self-hosted in Docker
+- 🌳 [**Wellnity**](https://alonanezhenska.co.uk/demo/wellnity/): Node.js API with 41 endpoints, PostgreSQL, self-hosted in Docker · [▶ try the prototype](https://alonanezhenska.co.uk/demo/wellnity/)
 - 🧩 [**Sudoku**](https://github.com/AlonaNezhenska/Sudoku): backtracking solver that shows every step (Java Swing)
 </details>
 
@@ -47,7 +47,7 @@ Pick your role and see the projects that fit it best.
 
 - 📚 [**Study Room**](https://github.com/sneri12pic/GemmaHackathon): Gemma-powered study companion; a validation step on every generated learning tree cut hallucinations by 35%
 - ⚖️ **LLM Gender Bias** (dissertation): do models treat people differently when gender is only hinted at? Results spring 2027
-- 🌙 [**Selena**](https://github.com/AlonaNezhenska/SeleneCycleAligned): cycle-aware fitness and nutrition app, offline-first and privacy-first
+- 🌙 [**Selena**](https://github.com/AlonaNezhenska/SeleneCycleAligned): cycle-aware fitness and nutrition app, offline-first and privacy-first · [▶ try it](https://alonanezhenska.co.uk/demo/selena/)
 </details>
 
 <details>
@@ -65,7 +65,7 @@ Pick your role and see the projects that fit it best.
 <br/>
 
 - 🌙 [**Selena**](https://github.com/AlonaNezhenska/SeleneCycleAligned): React Native app, 13 Jest test suites, explains its own calorie maths to the user
-- 🎮 [**Jenny's First Day at Lloyds**](https://github.com/AlonaNezhenska/The-Game-Jam-Prototype): Game Jam winner, [live on Scottish Widows](https://www.powerup.scottishwidows.co.uk/drive-to-thrive)
+- 🎮 [**Jenny's First Day**](https://github.com/AlonaNezhenska/The-Game-Jam-Prototype): Game Jam winner · [▶ play our original game](https://alonanezhenska.co.uk/demo/jenny/) (Lloyds later built [Drive to Thrive](https://www.powerup.scottishwidows.co.uk/drive-to-thrive) from our concept)
 - 🧺 [**Neon Laundry**](http://neonlaundry-commercialservices.co.uk/): real client site; calls to the owner went from about 10 a day to 2
 - 🚗 **Charity Drivers** (J.P. Morgan Code for Good): driver-side front end for a children's hospital charity
 </details>
@@ -84,12 +84,12 @@ Pick your role and see the projects that fit it best.
 
 | Project | What it is | Stack |
 |---|---|---|
-| 🌙 [**Selena**](https://github.com/AlonaNezhenska/SeleneCycleAligned) | Fitness and nutrition app that adapts workouts and food to your cycle, based on Dr Stacy Sims' research. Works fully offline, no account needed | React Native, Expo, Supabase, SQLite, Jest |
+| 🌙 [**Selena**](https://github.com/AlonaNezhenska/SeleneCycleAligned) | Fitness and nutrition app that adapts workouts and food to your cycle, based on Dr Stacy Sims' research. Works fully offline, no account needed. [▶ Try it](https://alonanezhenska.co.uk/demo/selena/) | React Native, Expo, Supabase, SQLite, Jest |
 | 🏎️ [**RaceSimulator**](https://github.com/AlonaNezhenska/RaceSimulator) | Multithreaded race engine behind a REST API. Every car runs on its own thread and reports into a shared concurrent position map | Java 17, Spring Boot |
-| 🎮 [**Jenny's First Day at Lloyds**](https://github.com/AlonaNezhenska/The-Game-Jam-Prototype) | Game Jam winning financial literacy game, passed enterprise security audits and [shipped live](https://www.powerup.scottishwidows.co.uk/drive-to-thrive) | React |
+| 🎮 [**Jenny's First Day**](https://github.com/AlonaNezhenska/The-Game-Jam-Prototype) | Our Game Jam winning financial literacy game. [▶ Play our original](https://alonanezhenska.co.uk/demo/jenny/). Lloyds' developers later used our concept to build [Drive to Thrive](https://www.powerup.scottishwidows.co.uk/drive-to-thrive), now live on Scottish Widows | React |
 | 🤖 [**Study Room**](https://github.com/sneri12pic/GemmaHackathon) | AI study companion from the Build with Gemma hackathon, with a validation pipeline that cut hallucinations by 35% | Python, Gemma, RAG |
 | 🧪 [**CoronaDesinfector**](https://github.com/AlonaNezhenska/CoronaDesinfector) | Mini Spring style IoC container from scratch: annotation driven injection, singletons, lifecycle hooks and dynamic proxies | Java, Reflection, CGLIB |
-| 🌳 [**Wellnity**](https://wellnity.ddns.net/) | Gamified student health app with a REST API, PostgreSQL and a self hosted Docker deployment | Node.js, PostgreSQL, Docker |
+| 🌳 [**Wellnity**](https://alonanezhenska.co.uk/demo/wellnity/) | Gamified student health app with a REST API, PostgreSQL and a self hosted Docker deployment. [▶ Try the prototype](https://alonanezhenska.co.uk/demo/wellnity/) | Node.js, PostgreSQL, Docker |
 | 🧺 [**Neon Laundry Commercial**](http://neonlaundry-commercialservices.co.uk/) | Live business site with per kg pricing, a bulk cost estimator and a rule based quoting assistant | HTML, CSS, JavaScript |
 | 🧩 [**Sudoku**](https://github.com/AlonaNezhenska/Sudoku) | Loads a puzzle from a file and solves it with backtracking, showing each step so you can watch it think | Java Swing |
 
