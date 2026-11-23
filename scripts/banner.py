@@ -113,6 +113,17 @@ mv = [at(0, start_x, paw_y, 0), at(t_walk0 - .01, start_x, paw_y, 0), at(t_walk0
       at(t_leap + d_lp * .45, stop_x, paw_y - 40, 1, -12, .85),
       at(t_end, stop_x, land_y, .9, -38, .45), at(t_end + .25, stop_x, land_y, 0, -40, .3), at(T, stop_x, land_y, 0, -40, .3)]
 glow_on = t_end / T * 100
+# the mouse in the O: drawn before the letters so the O hides its lower half
+oh = O[3] - O[1]
+holeB = ocy + oh * .2
+mev = cs.timeline([("mouse_idle", .40 * T), ("mouse_freeze", .06 * T), ("mouse_idle", .54 * T)])
+mouse_svg, mouse_css = cs.instance("mouse", mev, T, scale=SC)
+mg = cs.ground_offset(SC); mhid = 11 * SC
+mx = ocx - (O[2] - O[0]) * .04 - cw / 2
+def mat(t, up):
+    return f"{t*100:.2f}%{{transform:translate({mx:.1f}px,{holeB - mg + (1-up)*mhid - SC:.1f}px);opacity:{1 if up > 0 else 0}}}"
+mouse_css += (".mouse-m{animation:mm " + str(T) + "s ease-in-out infinite}@keyframes mm{" +
+              mat(0, 0) + mat(.15, 0) + mat(.151, .02) + mat(.19, 1) + mat(t_walk1 / T - .005, 1) + mat(t_walk1 / T + .019, .02) + mat(t_walk1 / T + .02, 0) + mat(1, 0) + "}")
 css = f"""
 .l{{transform-box:fill-box;transform-origin:center;animation:fly {T}s cubic-bezier(.2,.8,.2,1) infinite}}
 .l path{{animation:paint {T}s linear infinite}}
@@ -122,6 +133,7 @@ css = f"""
 @keyframes paint{{0%,15%{{fill:#f4f1ea}}19%,100%{{fill:var(--c)}}}}
 .cat-m{{animation:catm {T}s linear infinite}}@keyframes catm{{{''.join(mv)}}}
 {cat_css}
+{mouse_css}
 .glow{{transform-box:fill-box;transform-origin:center;animation:glow {T}s ease-in-out infinite}}
 @keyframes glow{{0%,{glow_on-1:.1f}%{{opacity:0;transform:scale(.4)}}{glow_on+5:.1f}%{{opacity:1;transform:scale(1.05)}}
  60%{{transform:scale(.92)}}67%{{transform:scale(1.04)}}74%{{transform:scale(.95)}}88%{{opacity:1;transform:scale(1)}}96%,100%{{opacity:0}}}}
@@ -144,6 +156,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
 <rect width="{W}" height="{H}" rx="22" fill="url(#bg)"/>
 <circle cx="170" cy="60" r="260" fill="url(#b1)"/><circle cx="1060" cy="300" r="300" fill="url(#b2)"/>
 <circle class="glow" cx="{ocx:.1f}" cy="{ocy:.1f}" r="{otw*.42:.1f}" fill="url(#o)"/>
+<g class="mouse-wrap">{mouse_svg}</g>
 {''.join(f'<g class="l l{i}"><path d="{l["d"]}"/></g>' for i,l in enumerate(letters))}
 <g filter="url(#cg)">{cat_svg}</g>
 <g class="tag" font-family="'Segoe UI',-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif" text-anchor="middle">
