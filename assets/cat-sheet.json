@@ -1,0 +1,54 @@
+{
+ "frame": [
+  48,
+  34
+ ],
+ "ground": 31,
+ "anims": {
+  "walk": {
+   "row": 0,
+   "frames": 8,
+   "fps": 11
+  },
+  "idle": {
+   "row": 1,
+   "frames": 10,
+   "fps": 6
+  },
+  "sit_down": {
+   "row": 2,
+   "frames": 7,
+   "fps": 12
+  },
+  "sit": {
+   "row": 3,
+   "frames": 22,
+   "fps": 6
+  },
+  "crouch": {
+   "row": 4,
+   "frames": 5,
+   "fps": 12
+  },
+  "wiggle": {
+   "row": 5,
+   "frames": 10,
+   "fps": 14
+  },
+  "leap": {
+   "row": 6,
+   "frames": 6,
+   "fps": 12
+  },
+  "lie_down": {
+   "row": 7,
+   "frames": 8,
+   "fps": 8
+  },
+  "sleep": {
+   "row": 8,
+   "frames": 8,
+   "fps": 5
+  }
+ }
+}

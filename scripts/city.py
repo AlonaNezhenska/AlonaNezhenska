@@ -112,76 +112,49 @@ out.append(f'<g font-family="Consolas,Menlo,monospace" font-size="11" text-ancho
 out.append(f'<rect x="0" y="{GROUND}" width="{W}" height="2" fill="url(#ln)"/>'
            f'<rect x="0" y="{GROUND+2}" width="{W}" height="{H-GROUND-2}" fill="#0b0a10"/>')
 
-# ---------- the cat (faces right while running left→right) ----------
-HEAD = """.....................aa.....
-....a........a......abca....
-...ada......ada....abca.....
-..adda.....adda....abca.....
-.addda....adddda...abca.....
-.addddaaaacdddda....abca....
-.addacbbbbcdadda....abca....
-.adabbbbbbbbaada.....abca...
-.adbbbbbbbbbbdda......abca..
-.abbbcbbbbcbbbdda.....abca..
-.abefgbbbbefgbbdaaaaaacbca..
-aabhfgbfbbhfgbaaacccccbbca..
-.abbgbfcfbbgbbbbdbbbbbbca...
-aabbbbbbbbbbbbaaabbbbbbca...
-..abbbbbbbbbbicbbbbbbbbca...
-...adijjjiiiicbbbbbbbbbca...
-....abeckccccbbbbbbbbbbca...""".split("\n")
-LEGS1 = """....abbbbbbbbbbbbbbbbbbca...
-....adbbbbbbbbbbbcbbbbbbca..
-.....addbbbbbbbbbdcbbbbbca..
-.....adddbbbbbbcdddcccbbbca.
-....adddaabbbbcaddddaacbbba.
-....adda..abbbcaddda..acbba.
-.....aa..abbbcaddda..accba..""".split("\n")
-LEGS2 = LEGS1[:4] + """....addaaabbbbcadddaaacbbba.
-.....adda.abbbcaadda..acbba.
-......aa...abbcaadd...accba.""".split("\n")
-PAL = {'a': '#171717', 'b': '#3b3b3b', 'c': '#2c2c2c', 'd': '#212121', 'e': '#ddf9a6', 'f': '#000',
-       'g': '#b0f22c', 'h': '#cbf676', 'i': '#4fa94c', 'j': '#6fff6a', 'k': '#c8f174'}
-P = 1.75
-def rects(rows, y0=0):
-    r = []
-    for y, row in enumerate(rows):
-        x = 0
-        while x < len(row):
-            c = row[x]
-            if c == ".":
-                x += 1
-                continue
-            n = 1
-            while x + n < len(row) and row[x + n] == c:
-                n += 1
-            r.append(f'<rect x="{x*P:.2f}" y="{(y0+y)*P:.2f}" width="{n*P+.2:.2f}" height="{P+.2:.2f}" fill="{PAL[c]}"/>')
-            x += n
-    return "".join(r)
-cw, ch = 28 * P, (len(HEAD) + len(LEGS1)) * P
-
-# keyframes: land on every roof, hop between them
-T = round(max(18, N * .42), 1)
-kf, last = [], len(tops) - 1
-for i, top in enumerate(tops):
-    pct = 2 + 90 * i / last
-    x = PAD + i * step + bw / 2 - cw / 2
-    kf.append(f"{pct:.2f}%{{transform:translate({x:.1f}px,{top-ch+1:.1f}px)}}")
-    if i < last:
-        nx = PAD + (i + 1) * step + bw / 2 - cw / 2
-        hop = min(top, tops[i + 1]) - ch - 6 - abs(top - tops[i + 1]) * .15
-        kf.append(f"{pct + 45/last:.2f}%{{transform:translate({(x+nx)/2:.1f}px,{hop:.1f}px)}}")
-kf.append(f"100%{{transform:translate({PAD + last*step + bw/2 - cw/2:.1f}px,{tops[-1]-ch+1:.1f}px)}}")
-css = (f".run{{animation:run {T}s linear infinite}}@keyframes run{{{''.join(kf)}}}"
+# ---------- the cat: walks along level roofs, leaps between different heights (faces right) ----------
+import os
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from catsprite import CatSprite
+cs = CatSprite()
+SC = 1.15
+cw, ch = cs.size(SC)
+G = cs.ground_offset(SC)
+T = round(max(20, N * .45), 1)
+last = len(tops) - 1
+seg = T * .9 / last                       # seconds per building
+t0 = T * .02
+cx = lambda i: PAD + i * step + bw / 2
+WALK, LEAP = cs.meta["anims"]["walk"], cs.meta["anims"]["leap"]
+mv, ev = [], []                            # movement keyframes, sprite frame events (anim, frame, start, dur)
+ev.append(("walk", 0, 0, t0))
+wf = 0
+for i in range(last + 1):
+    t = t0 + i * seg
+    mv.append((t, cx(i), tops[i]))
+    if i == last:
+        break
+    dh = tops[i + 1] - tops[i]
+    if abs(dh) < 5:                        # level enough: trot along
+        n = max(1, round(seg * WALK["fps"]))
+        for k in range(n):
+            ev.append(("walk", wf % WALK["frames"], t + k * seg / n, seg / n)); wf += 1
+    else:                                  # leap: arc up over the gap, legs stretched
+        mid = min(tops[i], tops[i + 1]) - 10 - abs(dh) * .2
+        mv.append((t + seg * .5, (cx(i) + cx(i + 1)) / 2, mid))
+        for k in range(LEAP["frames"]):
+            ev.append(("leap", k, t + k * seg / LEAP["frames"], seg / LEAP["frames"]))
+ev.append(("walk", 0, t0 + last * seg, T - (t0 + last * seg)))
+cat_svg, cat_css = cs.instance("cat", ev, T, scale=SC, flip=True)
+kf = "".join(f"{tt/T*100:.3f}%{{transform:translate({x-cw/2:.1f}px,{y-G:.1f}px)}}" for tt, x, y in mv)
+kf += f"100%{{transform:translate({cx(last)-cw/2:.1f}px,{tops[-1]-G:.1f}px)}}"
+css = (f".cat-m{{animation:run {T}s linear infinite}}@keyframes run{{{kf}}}{cat_css}"
        f".fade{{animation:fade {T}s linear infinite}}@keyframes fade{{0%{{opacity:0}}2%,92%{{opacity:1}}96%,100%{{opacity:0}}}}"
-       ".l1{animation:lg .36s steps(1) infinite}.l2{animation:lg .36s steps(1) -.18s infinite}@keyframes lg{0%{opacity:1}50%{opacity:0}}"
        ".st{animation:tw 4s ease-in-out infinite}@keyframes tw{50%{opacity:.25}}"
        ".fl{animation:fl 3s steps(1) infinite}@keyframes fl{0%,85%{opacity:1}86%,92%{opacity:.25}93%{opacity:1}}"
        ".bl{animation:bl 1.6s steps(1) infinite}@keyframes bl{50%{opacity:.2}}"
-       f"@media (prefers-reduced-motion:reduce){{*{{animation:none!important}}.run{{transform:translate({bx-cw/2:.1f}px,{tops[best_i]-ch+1:.1f}px)}}}}")
-cat = (f'<g class="run"><g class="fade" filter="url(#gl)" shape-rendering="crispEdges">'
-       f'<g transform="translate({cw:.1f},0) scale(-1,1)">{rects(HEAD)}'
-       f'<g class="l1">{rects(LEGS1, len(HEAD))}</g><g class="l2">{rects(LEGS2, len(HEAD))}</g></g></g></g>')
+       f"@media (prefers-reduced-motion:reduce){{*{{animation:none!important}}.cat-m{{transform:translate({bx-cw/2:.1f}px,{tops[best_i]-G:.1f}px)}}}}")
+cat = f'<g class="fade" filter="url(#gl)">{cat_svg}</g>'
 
 first, lastday = days[0][0], days[-1][0]
 svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" role="img" aria-label="Night city made from {USER}'s GitHub contributions: {total} in the last year, best week {peak}, longest streak {best_streak} days">
@@ -190,6 +163,7 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{
  <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b0a10"/><stop offset="1" stop-color="#1a1530"/></linearGradient>
  <linearGradient id="ln" x1="0" x2="1"><stop offset="0" stop-color="#b6ff3b" stop-opacity="0"/><stop offset=".2" stop-color="#b6ff3b"/><stop offset=".4" stop-color="#ff4fa3"/><stop offset=".6" stop-color="#3fd8ff"/><stop offset=".8" stop-color="#a98bff"/><stop offset="1" stop-color="#ffb03a" stop-opacity="0"/></linearGradient>
  <filter id="gl" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#b6ff3b" flood-opacity=".4"/></filter>
+ {cs.defs()}
 </defs>
 <style>{css}</style>
 <rect width="{W}" height="{H}" rx="16" fill="url(#sky)"/>
