@@ -41,10 +41,9 @@ T = svg("cat-walk.svg", [("walk", 9)], [(0, W + 10, 1), (9, -cw - 10, 1)], label
 
 # walk in, sit down, blink, stand up, walk off
 walk_in, sd = 3.2, len(cat.frames_of("sit_down")) / cat.meta["anims"]["sit_down"]["fps"]
-parts = [("walk", walk_in), ("sit_down", None), ("sit", 4.5), ("sit_down", None, True), ("walk", 3.2)]
-t1 = walk_in + sd + 4.5 + sd
-T = svg("cat-sit.svg", parts,
-        [(0, W + 10, 1), (walk_in, CX, 1), (t1, CX, 1), (t1 + 3.2, -cw - 10, 1)], label="pixel cat sitting down")
+# the middle cat just stays sitting in the middle, blinking now and then
+sit_t = len(cat.frames_of("sit")) / cat.meta["anims"]["sit"]["fps"]
+T = svg("cat-sit.svg", [("sit", sit_t)], [(0, CX, 1), (sit_t, CX, 1)], label="pixel cat sitting")
 
 # the ending scene from the portfolio: walk in, lie down, sleep (zzz)... a mouse tiptoes past,
 # the cat opens one eye, the mouse freezes, the eye closes, the mouse bolts
